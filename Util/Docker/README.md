@@ -50,33 +50,27 @@ ue4-docker setup
 ## Building the Docker images
 
 Navigate to `carla/Util/Docker` and use the following commands, each one will take a long time.  
-First, let's create a Docker image containing a compiled version of Unreal Engine 4 version `24.3`. Change the version if needed.
+First, let's create a Docker image containing a compiled version of Unreal Engine 4. Change the repo branch, if needed.
 
 ```
-ue4-docker build 4.24.3 --no-engine --no-minimal
+ue4-docker build custom -repo=https://github.com/CarlaUnreal/UnrealEngine -branch=carla -username <git username> -password <git access token> --no-engine --no-minimal
 ```
 
 Next, this will build the image with all the necessary requisites to build Carla in a **Ubuntu 18.04**
 
 ```
-docker build -t carla-prerequisites -f Prerequisites.Dockerfile .
+docker build -t carla-prerequisites -f Prerequisites.Dockerfile --build-arg EPIC_USER=<git username> --build-arg EPIC_PASS=<git access token> .
 ```
 
 Finally create the actual Carla image, it will search for `carla-prerequisites:latest`:
 
 ```
-docker build -t carla -f Carla.Dockerfile .
+docker build -t carla -f Carla.Dockerfile --build-arg GIT_BRANCH=0.9.13 .
 ```
 
 ---
 
 ## Other useful information
-
-You can use a specific repository **branch** or **tag** from our repository, using:
-
-```
-docker build -t carla -f Carla.Dockerfile . --build-arg GIT_BRANCH=branch_name
-```
 
 Clean up the intermediate images from the build (keep the ue4-source image so you can use it for full rebuilds)
 
